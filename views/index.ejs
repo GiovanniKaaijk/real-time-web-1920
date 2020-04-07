@@ -8,22 +8,39 @@
       <div class="home">
           <div class="home-container">
               <div class="create">
-                  <input type="text" id="create-username">
-                  <h2>Create game</h2>
+                  <div>
+                    <input placeholder="Username" type="text" id="create-username">
+                    <h2>Create game</h2>
+                  </div>
+                  
               </div>
               <div class="join">
-                  <h2>Join game</h2>
+                  <div>
+                    <span class="error"></span>
+                    <input placeholder="Username" type="text" id="join-username">
+                    <input placeholder="Room number" type="number" id="join-room">
+                    <h2>Join game</h2>
+                  </div>
+                  
               </div>
           </div>
       </div>
-      <div class="messages">
-        <ul id="messages"></ul>
-        <form action="">
-          <input id="chat-input" autocomplete="off" /><button>Send</button>
-        </form>
-      </div>
+      <main>
+        <div class="game">
+            <div class="board">
+
+            </div>
+        </div>
+        <div class="messages">
+            <ul id="messages"></ul>
+            <form action="">
+              <input id="chat-input" autocomplete="off" /><button>Send</button>
+            </form>
+          </div>
+      </main>
+      
     
     <script src="/socket.io/socket.io.js"></script>
-    <script src="main.js"></script>
+    <script src="./dist/bundle.js"></script>
   </body>
 </html>

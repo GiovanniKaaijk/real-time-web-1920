@@ -4,6 +4,7 @@ const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 const path = require('path')
 require('dotenv').config()
+const generateMap = require('./controls/mapLayout')
 
 app.use(express.static('public'))
     .set("view engine", "ejs")
@@ -15,44 +16,66 @@ const config = {
     port: 9000
 }
 
-let games = 0
-const connections = [null, null]
+let gameID = 0
+
+const rooms = []
 
 io.on('connection', (socket) => {
     console.log('a user connected')
     //chat
-    socket.on('message', (msg) => {
-        console.log(`${socket.username}: ${msg}`)
-        io.emit('message', msg)
+    socket.on('message', (data) => {
+        console.log(socket.username)
+        console.log(`${socket.username}: ${data.input}`)
+        io.to(`room-${data.gameID}`).emit('message', data.input)
     })
 
 
 
     //game
-    let playerIndex = -1;
-    for (let i in connections) {
-      if (connections[i] === null) {
-        playerIndex = i;
-      }
-    }
-    socket.emit('player-number', playerIndex)
-    if (playerIndex === -1) return
-
-    connections[playerIndex] = socket
-    socket.broadcast.emit('player-connect', playerIndex)
-
-
     socket.on('createGame', (data) => {
+        gameID ++;
+        socket.join(`room-` + gameID)
         socket.username = data.name
-        socket.emit('createGame')
+        socket.data = {
+            player: 1
+        }
+        rooms.push({game: gameID, members: [data.name]})
+        socket.emit('createGame', {
+            game: gameID,
+            username: data.name
+        })
     })
 
-
-
+    socket.on('joinGame', (data) => {
+        if(rooms[data.room - 1].members.length !== 2) {
+            rooms[data.room - 1].members.push(data.name)
+            console.log(rooms[data.room - 1].members.length)
+            socket.join(`room-` + data.room)
+            socket.username = data.name
+            socket.data = {
+                player: 2
+            }
+            socket.emit('joinGame')
+    
+            const connected = io.sockets.adapter.rooms[`room-${gameID}`]
+            const opponentID = Object.keys(connected.sockets)[0]
+            const opponent = io.sockets.connected[opponentID]
+            let mapLayout = generateMap(30)
+            console.log(mapLayout)
+            io.to(`room-${gameID}`).emit('startGame',  {
+                game: gameID,
+                username: data.name,
+                opponent: opponent.username,
+                mapLayout: mapLayout
+            })
+        } else {
+            socket.emit('fullServer')
+        }
+        
+    })
 
     socket.on('disconnect', function(){
-        console.log(`Player ${playerIndex} Disconnected`)
-        connections[playerIndex] = null
+        console.log(`Player Disconnected`)
     })
 })
 
