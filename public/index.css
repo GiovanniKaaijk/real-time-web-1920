@@ -19,10 +19,10 @@ form button { width: 25%; background: rgb(130, 224, 255); border: none; padding:
     transition: all .3s;
 }
 
-.home.fade {
+/* .home.fade {
     opacity: 0;
     pointer-events: none;
-}
+} */
 
 .home-container {
     display: flex;
@@ -38,10 +38,12 @@ form button { width: 25%; background: rgb(130, 224, 255); border: none; padding:
     left: 0;
     right: 0;
     bottom: 0;
+    transition: all .5s ease-in-out;
 }
 
 .home-container::before {
     background-color: #FF507D;
+    clip-path: polygon(0 0, 60% 0, 40% 100%, 0% 100%);
 }
 
 .home-container::after {
@@ -53,10 +55,28 @@ form button { width: 25%; background: rgb(130, 224, 255); border: none; padding:
     z-index: 2;
 }
 
+.home.fade .home-container::before {
+    left: -150%;
+}
+
+.home.fade .home-container::after {
+    left: 100%;
+}
+
+.home.hide {
+    display: none;
+}
+
+.prefade .home-container > div {
+    opacity: 0;
+    pointer-events: none;
+}
+
 .create, .join {
     width: 50%;
     display:flex;
     flex-direction: column;
+    transition: all .3s;
 }
 .create div, .join div {
     text-align: center;
@@ -108,4 +128,15 @@ main .messages {
 
 .obstacle {
     background-color: #4C4E57;
+}
+
+.board {
+    margin: 10vh auto;
+}
+
+.home input {
+    border-radius: 1.25em;
+    padding: 5px 10px;
+    border: 1px solid rgba(76, 78, 87, .5);
+    margin-bottom: 15px;
 }

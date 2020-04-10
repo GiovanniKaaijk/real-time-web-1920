@@ -55,12 +55,12 @@ socket.on('player-connect', (player) => {
 })
 
 socket.on('createGame', (data) => {
-   home.classList.add('fade')
+   removeOverlay()
    messages.insertAdjacentHTML('beforeend', `<li>${data.username}, please invite your friend to game number ${data.game}</li>`)
 })
 
 socket.on('joinGame', () => {
-    home.classList.add('fade')
+    removeOverlay()
 })
 
 socket.on('startGame', (data) => {
@@ -73,3 +73,13 @@ socket.on('fullServer', () => {
     console.log('full-server')
     document.querySelector('.error').textContent = 'Sorry, this game is full'
 }) 
+
+function removeOverlay() {
+    home.classList.add('prefade')
+   setTimeout(() => {
+    home.classList.add('fade')
+    setTimeout(() => {
+        home.classList.add('hide')
+    }, 500);
+   }, 300);
+}
