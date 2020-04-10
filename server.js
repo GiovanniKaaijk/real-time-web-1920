@@ -13,7 +13,7 @@ app.use(express.static('public'))
     })
 
 const config = {
-    port: 9000
+    port: process.env.PORT || 9000
 }
 
 let gameID = 0
