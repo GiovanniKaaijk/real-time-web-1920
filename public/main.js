@@ -1,6 +1,6 @@
 import {generateMap} from './game/map.js'
 import {initPlayer} from './game/players'
-import {checkKeyAndUpdate} from './game/inputUpdate'
+import {checkKeyAndUpdate, updatePlayer} from './game/updates'
 // chat
 
 const socket = io();
@@ -91,17 +91,6 @@ socket.on('fullServer', () => {
 socket.on('updatePlayer', data => {
     updatePlayer(data)
 })
-
-
-function updatePlayer(updatedPlayer) {
-    console.log(updatedPlayer)
-    const oldPlayerPos = document.querySelector(`.player-${updatedPlayer.player}`)
-    oldPlayerPos.parentNode.removeChild(oldPlayerPos)
-    const newPlayerPosParent = document.querySelector(`.row-${updatedPlayer.y} .col-${updatedPlayer.x}`)
-    const newPlayerPos = document.createElement('div')
-    newPlayerPos.classList.add('player', `player-${updatedPlayer.player}`)
-    newPlayerPosParent.appendChild(newPlayerPos)
-}
 
 function removeOverlay() {
     home.classList.add('prefade')
