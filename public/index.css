@@ -169,3 +169,16 @@ main .messages {
 .player-two {
     background-color: #FF507D
 }
+
+.player::before {
+    position: absolute;
+    top: 50%;left: 50%;transform: translate(-50%, -50%);
+}
+
+.player-one:before {
+    content: '1'
+}
+
+.player-two:before {
+    content: '2'
+}
