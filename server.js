@@ -74,6 +74,11 @@ io.on('connection', (socket) => {
         
     })
 
+    socket.on('updatePlayer', data => {
+        console.log(data)
+        io.to(`room-${data.room}`).emit('updatePlayer', data.player)
+    })
+
     socket.on('disconnect', function(){
         console.log(`Player Disconnected`)
     })

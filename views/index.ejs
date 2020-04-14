@@ -9,17 +9,23 @@
           <div class="home-container">
               <div class="create">
                   <div>
-                    <input placeholder="Username" type="text" id="create-username">
-                    <h2>Create game</h2>
+                    <form action="/" method="post">
+                      <input placeholder="Username" type="text" id="create-username">
+                      <button type="submit">Create game</button>
+                    </form>
+                    
                   </div>
                   
               </div>
               <div class="join">
                   <div>
                     <span class="error"></span>
-                    <input placeholder="Username" type="text" id="join-username">
-                    <input placeholder="Room number" type="number" id="join-room">
-                    <h2>Join game</h2>
+                    <form action="" method="post">
+                      <input placeholder="Username" type="text" id="join-username">
+                      <input placeholder="Room number" type="number" id="join-room">
+                      <button type="submit">Join game</button>
+                    </form>
+                    
                   </div>
                   
               </div>
@@ -28,7 +34,9 @@
       <main>
         <div class="game">
             <div class="board">
-
+              <div class="playground">
+                
+              </div>
             </div>
         </div>
         <div class="messages">
