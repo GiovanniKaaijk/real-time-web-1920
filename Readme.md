@@ -4,6 +4,10 @@ A 1v1 multiplayer bomberman game created with Socket.io.
 
 <img src="https://user-images.githubusercontent.com/43671292/78981850-226e1b80-7b21-11ea-9ba1-9378acc65393.png" width="1000"/>
 
+## Data life cycle
+
+<img src="https://user-images.githubusercontent.com/43671292/79847112-8e713f00-83bf-11ea-98aa-3ae995c2ef92.png" width="1000" />
+
 ## Installation
 
 ```
