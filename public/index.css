@@ -137,9 +137,7 @@ main .messages {
     position: relative;
 }
 
-.obstacle {
-    background-color: #4C4E57;
-}
+
 
 .board {
     margin: 10vh auto;
@@ -159,6 +157,7 @@ main .messages {
 
 .player {
     width: 100%;
+    opacity: .8;
     height:100%;
 }
 
@@ -181,4 +180,29 @@ main .messages {
 
 .player-two:before {
     content: '2'
+}
+
+.bomb {
+    animation: tickingBomb infinite ease-in-out 1s;
+    z-index: 100;
+}
+.col {transition:all .2s;}
+.explode {
+    background-color: red
+}
+
+@keyframes tickingBomb {
+    0% {
+        background-color: rgb(238, 189, 189)
+    }
+    50% {
+        background-color: rgb(235, 84, 84)
+    }
+    100% {
+        background-color: rgb(238, 189, 189)
+    }
+}
+
+.obstacle {
+    background-color: #4C4E57;
 }

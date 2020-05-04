@@ -5,6 +5,7 @@ const io = require('socket.io')(server)
 const path = require('path')
 require('dotenv').config()
 const generateMap = require('./controls/mapLayout')
+var Twitter = require('twitter');
 
 app.use(express.static('public'))
     .set("view engine", "ejs")
@@ -17,8 +18,17 @@ const config = {
 }
 
 let gameID = 0
-
+let playingRooms = 0
+let lastTweet = ''
 const rooms = []
+
+var client = new Twitter({
+    consumer_key: process.env.key,
+    consumer_secret: process.env.secret_key,
+    access_token_key: process.env.access,
+    access_token_secret: process.env.access_secret
+});
+
 
 io.on('connection', (socket) => {
     console.log('a user connected')
@@ -68,15 +78,34 @@ io.on('connection', (socket) => {
                 opponent: opponent.username,
                 mapLayout: mapLayout
             })
+            if(playingRooms === 0) {
+                setInterval(() => {
+                    client.get('search/tweets', {q: 'bomb'}, function(error, tweets, response) {
+                        console.log(tweets.statuses[0].text);
+                        if(lastTweet !== tweets.statuses[0].text) {
+                            io.emit('randombomb')
+                        }
+                        lastTweet = tweets.statuses[0].text
+                        
+                     });
+                }, 4000);
+            }
+            playingRooms++
         } else {
             socket.emit('fullServer')
         }
         
     })
 
+    
+
     socket.on('updatePlayer', data => {
         console.log(data)
         io.to(`room-${data.room}`).emit('updatePlayer', data.player)
+    })
+
+    socket.on('placeBomb', data => {
+        io.to(`room-${data.room}`).emit('placeBomb', data.player)
     })
 
     socket.on('disconnect', function(){

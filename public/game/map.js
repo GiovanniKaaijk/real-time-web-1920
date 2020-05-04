@@ -11,8 +11,8 @@ function generateMap(layout){
             el.classList.add(`col-${col.x}`)
             if(col.state === 'obstacle') {el.classList.add('obstacle')}
             // el.setAttribute('data-state', col.state)
-            // el.setAttribute('data-x', col.x)
-            // el.setAttribute('data-y', col.y)
+            el.setAttribute('data-x', col.x)
+            el.setAttribute('data-y', col.y)
             boardRow.appendChild(el)
         })
         board.appendChild(boardRow)

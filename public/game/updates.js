@@ -2,6 +2,9 @@ function checkKeyAndUpdate(e, player) {
     e = e || window.event;
     const x = player.x
     const y = player.y
+    if(e.keyCode == '32') {
+        player = ['bomb', player.player, player.x, player.y]
+    }
     if (e.keyCode == '38') {
         if(y !== 1) {
             if(!document.querySelector(`.row-${y - 1} .col-${x}`).classList.contains('obstacle')) {
@@ -39,7 +42,10 @@ function updatePlayer(updatedPlayer) {
     const newPlayerPosParent = document.querySelector(`.row-${updatedPlayer.y} .col-${updatedPlayer.x}`)
     const newPlayerPos = document.createElement('div')
     newPlayerPos.classList.add('player', `player-${updatedPlayer.player}`)
+    newPlayerPos.setAttribute('data-x', updatedPlayer.x)
+    newPlayerPos.setAttribute('data-y', updatedPlayer.y)
     newPlayerPosParent.appendChild(newPlayerPos)
 }
+
 
 export {checkKeyAndUpdate, updatePlayer}

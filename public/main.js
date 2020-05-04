@@ -78,8 +78,15 @@ socket.on('startGame', (data) => {
     generateMap(data.mapLayout)
     initPlayer()
     document.addEventListener('keydown', (e) => {
-        player = checkKeyAndUpdate(e, player)
-        socket.emit('updatePlayer', {player: player, room: document.querySelector('body').classList[0]})
+        const playerUpdate = checkKeyAndUpdate(e, player)
+        if(!Array.isArray(playerUpdate)) {
+            console.log(player)
+            player = playerUpdate
+            socket.emit('updatePlayer', {player: player, room: document.querySelector('body').classList[0]})
+        } else {
+            socket.emit('placeBomb', {player: playerUpdate, room: document.querySelector('body').classList[0]})
+        }
+        
     })
 })
 
@@ -92,6 +99,14 @@ socket.on('updatePlayer', data => {
     updatePlayer(data)
 })
 
+socket.on('placeBomb', data => {
+    placeBomb(data, player)
+})
+
+socket.on('randombomb', () => {
+    console.log('tweet bomb')
+})
+
 function removeOverlay() {
     home.classList.add('prefade')
    setTimeout(() => {
@@ -100,4 +115,66 @@ function removeOverlay() {
         home.classList.add('hide')
     }, 500);
    }, 300);
+}
+
+function placeBomb(data, playerData) {
+    console.log(data)
+    const x = data[2]
+    const y = data[3]
+
+    const bombPos = document.querySelector(`.row-${y} .col-${x}`)
+    bombPos.classList.add('bomb')
+    setTimeout(() => {
+        bombPos.classList.remove('bomb')
+        const explosionPositions = [document.querySelector(`.row-${y - 3} .col-${x}`),
+        document.querySelector(`.row-${y - 2} .col-${x}`),
+        document.querySelector(`.row-${y - 1} .col-${x}`),
+        document.querySelector(`.row-${y + 3} .col-${x}`),
+        document.querySelector(`.row-${y + 2} .col-${x}`),
+        document.querySelector(`.row-${y + 1} .col-${x}`),
+        document.querySelector(`.row-${y} .col-${x + 3}`),
+        document.querySelector(`.row-${y} .col-${x + 2}`),
+        document.querySelector(`.row-${y} .col-${x + 1}`),
+        document.querySelector(`.row-${y} .col-${x - 3}`),
+        document.querySelector(`.row-${y} .col-${x - 2}`),
+        document.querySelector(`.row-${y} .col-${x - 1}`)
+        ]
+        let thisplayer = playerData.player
+        let thisplayernumber
+        let opponentnumber
+        let opponent
+        if(thisplayer === 'one') {
+            opponent = 'two'
+            opponentnumber = 'two'
+            thisplayernumber = 'one'
+        } else {
+            opponent = 'one'
+            opponentnumber = 'one'
+            thisplayernumber = 'two'
+        }
+        console.log(`.player-${thisplayer}`)
+        thisplayer = document.querySelector(`.player-${thisplayer}`)
+        opponent = document.querySelector(`.player-${opponent}`)
+        console.log(thisplayer, opponent)
+        explosionPositions.forEach(position => {
+            if(position != null) {
+                if(!position.classList.contains('obstacle')) {
+                    position.classList.add('explode')
+                    const thisx = position.dataset.x
+                    const thisy = position.dataset.y
+                    if(thisx === thisplayer.dataset.x && thisy === thisplayer.dataset.y) {
+                        console.log(thisx, thisplayer.dataset.x, thisy, thisplayer.dataset.y)
+                        console.log(`${thisplayernumber} lost`)
+                    } else if(thisx === opponent.dataset.x && thisy === opponent.dataset.y) {
+                        console.log(`${opponentnumber} lost`)
+                    }
+                    setTimeout(() => {
+                        position.classList.remove('explode')
+                    },1000)
+                }
+                
+            }
+            
+        })
+    },4500)
 }
