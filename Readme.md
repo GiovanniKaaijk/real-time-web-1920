@@ -98,15 +98,15 @@ var client = new Twitter({
 
 ### Packages
 
-"chalk": "^4.0.0",
-"dotenv": "^8.2.0",
-"ejs": "^3.0.2",
-"express": "^4.17.1",
-"http": "0.0.1-security",
-"path": "^0.12.7",
-"socket.io": "^2.3.0",
-"twitter": "^1.7.1",
-"webpack": "^4.42.1"
+- "chalk": "^4.0.0",
+- "dotenv": "^8.2.0",
+- "ejs": "^3.0.2",
+- "express": "^4.17.1",
+- "http": "0.0.1-security",
+- "path": "^0.12.7",
+- "socket.io": "^2.3.0",
+- "twitter": "^1.7.1",
+- "webpack": "^4.42.1"
 
 ## Keep up to date
 Make sure you pull the repository once in a while since we are still working on this project, you can do this by using ```git pull```
