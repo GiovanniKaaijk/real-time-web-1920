@@ -21,6 +21,7 @@ let gameID = 0
 let playingRooms = 0
 let lastTweet = ''
 let lastSecondTweet = ''
+let tweettimer = 0;
 const rooms = []
 
 var client = new Twitter({
@@ -81,13 +82,18 @@ io.on('connection', (socket) => {
                     mapLayout: mapLayout
                 })
                 if(playingRooms === 0) {
+                    setInterval(() => {
+                        tweettimer += 1
+                    }, 1000);
                     client.stream('statuses/filter', {track: 'bomb'}, function(stream) {
                         stream.on('data', function(event) {
-                          console.log(event.text);
                           if(event.text !== undefined) {
-                            console.log(event.text);
                             if(lastTweet !== event.text) {
-                                io.emit('randombomb', ['bomb', 'random',  Math.floor(Math.random() * 10) + 1, Math.floor(Math.random() * 10) + 1])
+                                if(tweettimer > 3) {
+                                    io.emit('randombomb', ['bomb', 'random',  Math.floor(Math.random() * 10) + 1, Math.floor(Math.random() * 10) + 1])
+                                    tweettimer = 0
+                                }
+                                
                             }
                             lastTweet = event.text
                         }
