@@ -20,6 +20,7 @@ const config = {
 let gameID = 0
 let playingRooms = 0
 let lastTweet = ''
+let lastSecondTweet = ''
 const rooms = []
 
 var client = new Twitter({
@@ -57,43 +58,52 @@ io.on('connection', (socket) => {
     })
 
     socket.on('joinGame', (data) => {
-        if(rooms[data.room - 1].members.length !== 2) {
-            rooms[data.room - 1].members.push(data.name)
-            console.log(rooms[data.room - 1].members.length)
-            socket.join(`room-` + data.room)
-            socket.username = data.name
-            socket.data = {
-                player: 2
-            }
-            socket.emit('joinGame')
-    
-            const connected = io.sockets.adapter.rooms[`room-${gameID}`]
-            const opponentID = Object.keys(connected.sockets)[0]
-            const opponent = io.sockets.connected[opponentID]
-            let mapLayout = generateMap(30)
-            console.log(mapLayout)
-            io.to(`room-${gameID}`).emit('startGame',  {
-                game: gameID,
-                username: data.name,
-                opponent: opponent.username,
-                mapLayout: mapLayout
-            })
-            if(playingRooms === 0) {
-                setInterval(() => {
-                    client.get('search/tweets', {q: 'bomb'}, function(error, tweets, response) {
-                        console.log(tweets.statuses[0].text);
-                        if(lastTweet !== tweets.statuses[0].text) {
-                            io.emit('randombomb')
+        if(rooms[data.room - 1] !== undefined) {
+            if(rooms[data.room - 1].members.length !== 2) {
+                rooms[data.room - 1].members.push(data.name)
+                console.log(rooms[data.room - 1].members.length)
+                socket.join(`room-` + data.room)
+                socket.username = data.name
+                socket.data = {
+                    player: 2
+                }
+                socket.emit('joinGame')
+        
+                const connected = io.sockets.adapter.rooms[`room-${gameID}`]
+                const opponentID = Object.keys(connected.sockets)[0]
+                const opponent = io.sockets.connected[opponentID]
+                let mapLayout = generateMap(30)
+                console.log(mapLayout)
+                io.to(`room-${gameID}`).emit('startGame',  {
+                    game: gameID,
+                    username: data.name,
+                    opponent: opponent.username,
+                    mapLayout: mapLayout
+                })
+                if(playingRooms === 0) {
+                    client.stream('statuses/filter', {track: 'bomb'}, function(stream) {
+                        stream.on('data', function(event) {
+                          console.log(event.text);
+                          if(event.text !== undefined) {
+                            console.log(event.text);
+                            if(lastTweet !== event.text) {
+                                io.emit('randombomb', ['bomb', 'random',  Math.floor(Math.random() * 10) + 1, Math.floor(Math.random() * 10) + 1])
+                            }
+                            lastTweet = event.text
                         }
-                        lastTweet = tweets.statuses[0].text
-                        
-                     });
-                }, 4000);
+                        });
+                       
+                        stream.on('error', function(error) {
+                          throw error;
+                        });
+                      });
+                }
+                playingRooms++
+            } else {
+                socket.emit('fullServer')
             }
-            playingRooms++
-        } else {
-            socket.emit('fullServer')
         }
+        
         
     })
 

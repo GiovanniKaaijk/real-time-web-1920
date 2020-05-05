@@ -206,3 +206,9 @@ main .messages {
 .obstacle {
     background-color: #4C4E57;
 }
+.home {z-index: 1000000;}
+h1 {transition:all .2s;color:#fff;width:100%;text-align:center;margin:auto;}
+
+.finish h1 {
+    opacity: 0;
+}

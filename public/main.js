@@ -103,8 +103,8 @@ socket.on('placeBomb', data => {
     placeBomb(data, player)
 })
 
-socket.on('randombomb', () => {
-    console.log('tweet bomb')
+socket.on('randombomb', data => {
+    placeBomb(data, player)
 })
 
 function removeOverlay() {
@@ -165,8 +165,10 @@ function placeBomb(data, playerData) {
                     if(thisx === thisplayer.dataset.x && thisy === thisplayer.dataset.y) {
                         console.log(thisx, thisplayer.dataset.x, thisy, thisplayer.dataset.y)
                         console.log(`${thisplayernumber} lost`)
+                        replaceHome(thisplayernumber)
                     } else if(thisx === opponent.dataset.x && thisy === opponent.dataset.y) {
                         console.log(`${opponentnumber} lost`)
+                        replaceHome(opponentnumber)
                     }
                     setTimeout(() => {
                         position.classList.remove('explode')
@@ -177,4 +179,26 @@ function placeBomb(data, playerData) {
             
         })
     },4500)
+}
+
+function replaceHome(lost) {
+    const home = document.querySelector('.home-container')
+    const join = document.querySelector('.join')
+    const create = document.querySelector('.create')
+    let title = document.createElement('h1')
+    title.innerHTML = `player ${lost} lost the game`
+
+    join.parentNode.removeChild(join)
+    home.replaceChild(title, create)
+    document.querySelector('.home').classList.add('finish')
+    document.querySelector('.home').classList.remove('hide')
+    setTimeout(() => {
+        document.querySelector('.home').classList.remove('fade')
+    }, 300)
+    setTimeout(() => {
+        document.querySelector('.home').classList.remove('finish')
+    }, 600);
+    setTimeout(() => {
+        window.location.reload()
+    }, 2500);
 }
